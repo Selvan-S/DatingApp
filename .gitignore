@@ -483,3 +483,13 @@ $RECYCLE.BIN/
 # Vim temporary swap files
 *.swp
 .vscode
+appsettings.json
+package-lock.json
+
+# Angular project files
+node_modules/
+e2e/
+coverage/
+dist/
+tmp/
+typings/
