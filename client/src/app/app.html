@@ -1,1 +1,10 @@
-<h1>{{ title() }}</h1>
+<ul class="flex flex-col space-y-4">
+  @for (user of users(); track $index) {
+  <li class="bg-white rounded-xl shadow-md p-4" v-for="user in sample">
+    <div class="flex flex-col space-y-4">
+      <p class="text-lg font-medium text-gray-900">User: {{ user.userName }}</p>
+      <p class="text-lg font-medium text-gray-500 dark:text-gray-400">ID: {{ user.id }}</p>
+    </div>
+  </li>
+  }
+</ul>
