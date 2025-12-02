@@ -493,3 +493,7 @@ coverage/
 dist/
 tmp/
 typings/
+
+/API/dating.db*
+/API/bin/
+/API/obj/
