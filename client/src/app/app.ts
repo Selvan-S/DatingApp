@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, inject, OnInit, signal } from '@angular/core';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -11,22 +12,23 @@ export class App implements OnInit {
   private http = inject(HttpClient);
   protected readonly title = signal('client');
   // set the response user data
-  protected readonly sample = [] as any[];
+  protected users: any = signal<any>([]);
 
-  ngOnInit(): void {
-    this.http.get<string>('https://localhost:5001/api/users').subscribe({
+  ngOnInit() {
+    this.loadUsers();
+  }
 
-      next: (data) => {
-        console.log(data);
-        this.sample.push(...data as any);
-      },
-      error: (err) => {
-        console.error('Error fetching title:', err);
-      },
-      complete: () => {
-        console.log('Completed fetching title');
-      }
-    })
+  private async loadUsers() {
+    this.users.set(await this.getUsers());
+  }
+
+  async getUsers() {
+    try {
+      return lastValueFrom(this.http.get<string>('https://localhost:5001/api/users'));
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      return [];
+    }
   }
 }
 
