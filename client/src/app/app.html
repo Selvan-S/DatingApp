@@ -1,10 +1,13 @@
-<ul class="flex flex-col space-y-4">
-  @for (user of users(); track $index) {
-  <li class="bg-white rounded-xl shadow-md p-4" v-for="user in sample">
-    <div class="flex flex-col space-y-4">
-      <p class="text-lg font-medium text-gray-900">User: {{ user.userName }}</p>
-      <p class="text-lg font-medium text-gray-500 dark:text-gray-400">ID: {{ user.id }}</p>
+<ul class="list-none space-y-4">
+  <li *ngFor="let user of users(); let i = index" class="list-item">
+    <div class="card compact side bg-base-100 shadow-xl p-2">
+      <div class="flex-row items-center space-x-4">
+        <div class="flex-1">
+          <h2 class="card-title">{{ user.userName }}</h2>
+          <p class="text-lg text-gray-500 dark:text-gray-400">ID: {{ user.id }}</p>
+        </div>
+      </div>
     </div>
   </li>
-  }
 </ul>
+
