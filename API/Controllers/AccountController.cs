@@ -13,13 +13,14 @@ public class AccountController(DataContext context) : BaseApiController
     public async Task<ActionResult<AppUser>> Register(RegisterDto registerDto)
     {
 
-        if (await UserExists(registerDto.Username)) return BadRequest("Username is taken");
+        if (await EmailExists(registerDto.Email)) return BadRequest("Email is taken");
 
         using var hmac = new HMACSHA512();
 
         var user = new AppUser
         {
-            UserName = registerDto.Username.ToLower(),
+            Email = registerDto.Email.ToLower(),
+            DisplayName = registerDto.DisplayName,
             PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
             PasswordSalt = hmac.Key
         };
@@ -30,9 +31,9 @@ public class AccountController(DataContext context) : BaseApiController
         return user;
     }
 
-    private async Task<bool> UserExists(string username)
+    private async Task<bool> EmailExists(string Email)
     {
-        return await context.Users.AnyAsync(x => x.UserName.ToLower() == username.ToLower());
+        return await context.Users.AnyAsync(x => x.Email.ToLower() == Email.ToLower());
     }
 
 }
