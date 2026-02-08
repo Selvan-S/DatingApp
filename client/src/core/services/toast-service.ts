@@ -41,4 +41,17 @@ export class ToastService {
       }
     }, duration);
   }
+
+  success(message: string, duration?: number) {
+    this.createToastElement(message, 'alert-success', duration)
+  }
+  error(message: string, duration?: number) {
+    this.createToastElement(message, 'alert-error', duration)
+  }
+  warning(message: string, duration?: number) {
+    this.createToastElement(message, 'alert-warning', duration)
+  }
+  info(message: string, duration?: number) {
+    this.createToastElement(message, 'alert-info', duration)
+  }
 }
