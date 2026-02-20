@@ -12,7 +12,7 @@ public class MembersController(IMemberRepository memberRepository) : BaseApiCont
     [HttpGet] // GET api/members
     public async Task<ActionResult<IReadOnlyList<Member>>> GetMembers()
     {
-        return Ok(memberRepository.GetMembersAsync());
+        return Ok(await memberRepository.GetMembersAsync());
     }
 
     [HttpGet("{id}")] // GET api/members/5
