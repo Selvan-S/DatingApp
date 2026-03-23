@@ -497,3 +497,7 @@ typings/
 /API/dating.db*
 /API/bin/
 /API/obj/
+
+.continue
+API/dating.db
+API/dating.db
