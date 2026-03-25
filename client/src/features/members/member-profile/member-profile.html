@@ -13,6 +13,17 @@
       </span>
     </div>
     <h3 class="text-lg font-semibold text-primary">About {{ member.displayName }}</h3>
-    <div>{{ member.description }}</div>
+    @if (memberService.editMode()) {
+      <textarea
+        [(ngModel)]="member.description"
+        class="textarea textarea-bordered w-full"
+        rows="5"
+      ></textarea>
+      <button class="btn btn-primary" (click)="memberService.editMode.set(false)">
+        Save
+      </button>
+    } @else {
+      <div>{{ member.description }}</div>
+    }
   </div>
 }

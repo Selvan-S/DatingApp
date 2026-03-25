@@ -1,15 +1,18 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Member } from '../../../types/member';
-import { DatePipe } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
+import { MemberService } from '../../../core/services/member-service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-member-profile',
-  imports: [DatePipe],
+  imports: [DatePipe, FormsModule],
   templateUrl: './member-profile.html',
   styleUrl: './member-profile.css',
 })
 export class MemberProfile implements OnInit {
+  protected memberService = inject(MemberService);
   private route = inject(ActivatedRoute);
   protected member = signal<Member | undefined>(undefined);
 
