@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using API.DTOs;
 using API.Entities;
 using API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -33,6 +35,29 @@ public class MembersController(IMemberRepository memberRepository) : BaseApiCont
         if (photos == null) return NotFound("Photos not found");
 
         return Ok(photos);
+    }
+
+    [HttpPut] // PUT api/members
+    public async Task<ActionResult> UpdateMember(MemberUpdateDto memberUpdateDto)
+    {
+        var memberId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (memberId == null) return Unauthorized("User not authenticated");
+
+        var member = await memberRepository.GetMemberByIdAsync(memberId);
+
+        if (member == null) return NotFound("Member not found");
+
+        member.DisplayName = memberUpdateDto.DisplayName ?? member.DisplayName;
+        member.Description = memberUpdateDto.Description ?? member.Description;
+        member.City = memberUpdateDto.City ?? member.City;
+        member.Country = memberUpdateDto.Country ?? member.Country;
+
+        // memberRepository.Update(member); // No need to call Update since we're tracking the entity
+
+        if (await memberRepository.saveAllAsync()) return NoContent();
+
+        return BadRequest("Failed to update profile");
     }
 
 }
