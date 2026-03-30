@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using API.DTOs;
 using API.Entities;
+using API.Extensions;
 using API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -40,11 +41,9 @@ public class MembersController(IMemberRepository memberRepository) : BaseApiCont
     [HttpPut] // PUT api/members
     public async Task<ActionResult> UpdateMember(MemberUpdateDto memberUpdateDto)
     {
-        var memberId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var memberId = User.GetMemberId();
 
-        if (memberId == null) return Unauthorized("User not authenticated");
-
-        var member = await memberRepository.GetMemberByIdAsync(memberId);
+        var member = await memberRepository.GetMemberForUpdateAsync(memberId);
 
         if (member == null) return NotFound("Member not found");
 
@@ -52,6 +51,8 @@ public class MembersController(IMemberRepository memberRepository) : BaseApiCont
         member.Description = memberUpdateDto.Description ?? member.Description;
         member.City = memberUpdateDto.City ?? member.City;
         member.Country = memberUpdateDto.Country ?? member.Country;
+
+        member.User.DisplayName = memberUpdateDto.DisplayName ?? member.User.DisplayName;
 
         // memberRepository.Update(member); // No need to call Update since we're tracking the entity
 
