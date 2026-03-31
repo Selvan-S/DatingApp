@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <Folder Include="Errors\" />
+    <Folder Include="Helpers\" />
     <Folder Include="Interfaces\" />
     <Folder Include="Middleware\" />
     <Folder Include="Services\" />
