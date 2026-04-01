@@ -1,10 +1,9 @@
-import { Component, inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Observable } from 'rxjs';
-import { MemberService } from '../../../core/services/member-service';
-import { Photo } from '../../../types/member';
 import { AsyncPipe } from '@angular/common';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { MemberService } from '../../../core/services/member-service';
 import { ImageUpload } from "../../../shared/image-upload/image-upload";
+import { Photo } from '../../../types/member';
 
 @Component({
   selector: 'app-member-photos',
@@ -12,22 +11,34 @@ import { ImageUpload } from "../../../shared/image-upload/image-upload";
   templateUrl: './member-photos.html',
   styleUrl: './member-photos.css',
 })
-export class MemberPhotos {
+export class MemberPhotos implements OnInit {
   protected memberSevice = inject(MemberService);
   private route = inject(ActivatedRoute);
-  protected photos$?: Observable<Photo[]>;
+  protected photos = signal<Photo[]>([]);
+  protected loading = signal(false);
 
-  constructor() {
+  ngOnInit(): void {
     const memberId = this.route.parent?.snapshot.paramMap.get('id');
     if (memberId) {
-      this.photos$ = this.memberSevice.getMemberPhotos(memberId);
+      this.memberSevice.getMemberPhotos(memberId).subscribe({
+        next: photos => this.photos.set(photos),
+        error: err => console.error('Error fetching photos:', err)
+      })
     }
   }
 
-  get photoMocks() {
-    return Array.from({ length: 20 }, (_, i) => ({
-      id: i + 1,
-      url: `https://picsum.photos/200/300?random=${i + 1}`,
-    }));
+  onUploadImage(file: File) {
+    this.loading.set(true);
+    this.memberSevice.uploadPhoto(file).subscribe({
+      next: photo => {
+        this.memberSevice.editMode.set(false);
+        this.photos.update(photos => [...photos, photo]);
+        this.loading.set(false);
+      },
+      error: err => {
+        console.error('Error uploading photo:', err);
+        this.loading.set(false);
+      }
+    });
   }
 }
