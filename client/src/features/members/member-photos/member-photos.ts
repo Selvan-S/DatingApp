@@ -7,7 +7,7 @@ import { Photo } from '../../../types/member';
 
 @Component({
   selector: 'app-member-photos',
-  imports: [AsyncPipe, ImageUpload],
+  imports: [ImageUpload],
   templateUrl: './member-photos.html',
   styleUrl: './member-photos.css',
 })
