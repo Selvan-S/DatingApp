@@ -112,4 +112,31 @@ public class MembersController(IMemberRepository memberRepository, IPhotoService
 
     }
 
+    [HttpDelete("delete-photo/{photoId}")]
+    public async Task<ActionResult> DeletePhoto(int photoId)
+    {
+        var member = await memberRepository.GetMemberForUpdateAsync(User.GetMemberId());
+
+        if (member == null) return BadRequest("Cannot update member");
+
+        var photo = member.Photos.SingleOrDefault(p => p.Id == photoId);
+
+        if (photo == null || photo.Url == member.ImageUrl)
+        {
+            return BadRequest("This photo cannot be deleted");
+        }
+
+        if (photo.PublicId != null)
+        {
+            var result = await photoService.DeletePhotoAsync(photo.PublicId);
+            if (result.Error != null) return BadRequest(result.Error.Message);
+        }
+
+        member.Photos.Remove(photo);
+
+        if (await memberRepository.saveAllAsync()) return Ok();
+
+        return BadRequest("Problem deleting photo");
+    }
+
 }
