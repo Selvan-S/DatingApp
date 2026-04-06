@@ -1,37 +1,59 @@
 <div class="card bg-base-100 w-1/2 mx-auto flex-col p-6 rounded-lg shadow-lg">
   <div class="card-title justify-center text-3xl text-primary">Sign up</div>
   <div class="card-body w-full">
-    <form #registerForm="ngForm" (ngSubmit)="register()" class="flex flex-col gap-4 w-full">
+    <form [formGroup]="registerForm" (ngSubmit)="register()" class="flex flex-col gap-4 w-full">
       <div class="form-control w-full">
-        <input
-          type="email"
-          name="email"
-          [(ngModel)]="creds.email"
-          class="input input-bordered w-full"
-          placeholder="Email"
-        />
+        <label class="floating-label">
+          <span>Email</span>
+          <input
+            type="email"
+            formControlName="email"
+            class="input input-bordered w-full"
+            placeholder="Email"
+          />
+        </label>
       </div>
       <div class="form-control w-full">
-        <input
-          type="text"
-          name="displayName"
-          placeholder="Display Name"
-          [(ngModel)]="creds.displayName"
-          class="input input-bordered w-full"
-        />
+        <label class="floating-label">
+          <span>DisplayName</span>
+          <input
+            type="text"
+            formControlName="displayName"
+            class="input input-bordered w-full"
+            placeholder="Display Name"
+          />
+        </label>
       </div>
       <div class="form-control w-full">
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          [(ngModel)]="creds.password"
-          class="input input-bordered w-full"
-        />
+        <label class="floating-label">
+          <span>Password</span>
+          <input
+            type="password"
+            formControlName="password"
+            class="input input-bordered w-full"
+            placeholder="Password"
+          />
+        </label>
+      </div>
+      <div class="form-control w-full">
+        <label class="floating-label">
+          <span>Confirm Password</span>
+          <input
+            type="password"
+            formControlName="confirmPassword"
+            class="input input-bordered w-full"
+            placeholder="Confirm Password"
+          />
+        </label>
       </div>
       <div class="flex items-center justify-end gap-3">
         <button type="button" class="btn btn-secondary" (click)="cancel()">Cancel</button>
         <button type="submit" class="btn btn-primary">Register</button>
+      </div>
+
+      <div class="flex flex-col items-start px-3 w-full mockup-code text-lg">
+        <div>Form value: {{ registerForm.value | json }}</div>
+        <div>Form status: {{ registerForm.status | json }}</div>
       </div>
     </form>
   </div>
