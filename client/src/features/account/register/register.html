@@ -3,58 +3,26 @@
   <div class="card-body w-full">
     <form [formGroup]="registerForm" (ngSubmit)="register()" class="flex flex-col gap-4 w-full">
       <div class="form-control w-full">
-        <label class="floating-label">
-          <span>Email</span>
-          <input
-            type="email"
-            formControlName="email"
-            class="input input-bordered w-full"
-            placeholder="Email"
-          />
-        </label>
+        <app-text-input lable="Email" formControlName="email" type="email" />
       </div>
       <div class="form-control w-full">
-        <label class="floating-label text-left">
-          <span>DisplayName</span>
-          <input
-            type="text"
-            formControlName="displayName"
-            class="input input-bordered w-full"
-            [class.input-error]="registerForm.controls['displayName'].invalid && registerForm.controls['displayName'].touched"
-            placeholder="Display Name"
-          />
-          @if (registerForm.controls['displayName'].invalid && registerForm.controls['displayName'].touched) {
-            <div class="text-error text-xs">Display Name is required.</div>
-          }
-        </label>
+        <app-text-input lable="Display Name" formControlName="displayName" />
       </div>
       <div class="form-control w-full">
-        <label class="floating-label">
-          <span>Password</span>
-          <input
-            type="password"
-            formControlName="password"
-            class="input input-bordered w-full"
-            placeholder="Password"
-          />
-        </label>
+        <app-text-input lable="Password" formControlName="password" type="password" />
       </div>
       <div class="form-control w-full">
-        <label class="floating-label">
-          <span>Confirm Password</span>
-          <input
-            type="password"
-            formControlName="confirmPassword"
-            class="input input-bordered w-full"
-            placeholder="Confirm Password"
-          />
-        </label>
+        <app-text-input
+          lable="Confirm Password"
+          formControlName="confirmPassword"
+          type="password"
+        />
       </div>
       <div class="flex items-center justify-end gap-3">
         <button type="button" class="btn btn-secondary" (click)="cancel()">Cancel</button>
-        <button
-        [disabled]="!registerForm.valid"
-        type="submit" class="btn btn-primary">Register</button>
+        <button [disabled]="!registerForm.valid" type="submit" class="btn btn-primary">
+          Register
+        </button>
       </div>
 
       <div class="flex flex-col items-start px-3 w-full mockup-code text-lg">
