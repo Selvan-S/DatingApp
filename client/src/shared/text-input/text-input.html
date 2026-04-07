@@ -1,0 +1,20 @@
+<label class="floating-label text-left">
+  <span>DisplayName</span>
+  <input
+    [type]="type()"
+    [formControl]="control"
+    class="input input-bordered w-full"
+    [class.input-error]="
+      control.invalid && control.touched
+    "
+    [class.input-success]="
+      control.valid && control.touched
+    "
+    [placeholder]="lable()"
+  />
+  @if (
+    control.hasError('required') && control.touched
+  ) {
+    <div class="text-error text-xs">{{lable()}} is required.</div>
+  }
+</label>
