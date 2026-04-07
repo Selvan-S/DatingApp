@@ -14,14 +14,18 @@
         </label>
       </div>
       <div class="form-control w-full">
-        <label class="floating-label">
+        <label class="floating-label text-left">
           <span>DisplayName</span>
           <input
             type="text"
             formControlName="displayName"
             class="input input-bordered w-full"
+            [class.input-error]="registerForm.controls['displayName'].invalid && registerForm.controls['displayName'].touched"
             placeholder="Display Name"
           />
+          @if (registerForm.controls['displayName'].invalid && registerForm.controls['displayName'].touched) {
+            <div class="text-error text-xs">Display Name is required.</div>
+          }
         </label>
       </div>
       <div class="form-control w-full">
