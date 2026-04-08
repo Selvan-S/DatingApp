@@ -2,6 +2,7 @@
   <span>{{ lable() }}</span>
   <input
     [type]="type()"
+    [max]="maxDate()"
     [formControl]="control"
     class="input input-bordered w-full"
     [class.input-error]="control.invalid && control.touched"
