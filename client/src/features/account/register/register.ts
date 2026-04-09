@@ -1,6 +1,7 @@
 import { JsonPipe } from '@angular/common';
 import { Component, inject, output, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AccountService } from '../../../core/services/account-service';
 import { TextInput } from "../../../shared/text-input/text-input";
 import { RegisterCreds } from '../../../types/user';
@@ -14,11 +15,13 @@ import { RegisterCreds } from '../../../types/user';
 export class Register {
   private accountService = inject(AccountService);
   private fb = inject(FormBuilder);
+  private router = inject(Router);
   cancelRegister = output<boolean>();
   protected creds = {} as RegisterCreds;
   protected credentialsForm: FormGroup;
   protected profileForm: FormGroup;
   protected currentStep = signal(1);
+  protected validationErrors = signal<string[]>([]);
 
   constructor() {
     this.credentialsForm = this.fb.group({
@@ -29,7 +32,7 @@ export class Register {
     });
 
     this.profileForm = this.fb.group({
-      gender: ['', Validators.required],
+      gender: ['male', Validators.required],
       dateOfBirth: ['', Validators.required],
       city: ['', Validators.required],
       country: ['', Validators.required],
@@ -66,18 +69,21 @@ export class Register {
     return today.toISOString().split('T')[0];
   }
 
-  protected register() {
+  register() {
     if (this.profileForm.valid && this.credentialsForm.valid) {
       const formData = { ...this.credentialsForm.value, ...this.profileForm.value };
-      console.log("form data", formData);
+      this.accountService.register(formData).subscribe({
+        next: () => {
+          this.router.navigateByUrl('/members');
+        },
+        error: error => {
+          console.log(error);
+          this.validationErrors.set(error);
+        },
+
+      })
     }
-    // this.accountService.register(this.creds).subscribe({
-    //   next: (response) => {
-    //     console.log(response);
-    //     this.cancel();
-    //   },
-    //   error: error => console.log(error),
-    // })
+
   }
 
   cancel() {
