@@ -1,0 +1,31 @@
+<label class="floating-label text-left">
+  <span>{{ lable() }}</span>
+  <input
+    [type]="type()"
+    [max]="maxDate()"
+    [formControl]="control"
+    class="input input-bordered w-full"
+    [class.input-error]="control.invalid && control.touched"
+    [class.input-success]="control.valid && control.touched"
+    [placeholder]="lable()"
+  />
+  @if (control.hasError('required') && control.touched) {
+    <div class="text-error text-xs">{{ lable() }} is required.</div>
+  }
+  @if (control.hasError('email') && control.touched) {
+    <div class="text-error text-xs">Invalid email address</div>
+  }
+  @if (control.hasError('minlength') && control.touched) {
+    <div class="text-error text-xs">
+      {{ lable() }} must be at least {{ control.errors?.['minlength'].requiredLength }} characters
+    </div>
+  }
+  @if (control.hasError('maxlength') && control.touched) {
+    <div class="text-error text-xs">
+      {{ lable() }} must be at most {{ control.errors?.['maxlength'].requiredLength }} characters
+    </div>
+  }
+  @if (control.hasError('passwordMismatch') && control.touched) {
+    <div class="text-error text-xs">Password do not match</div>
+  }
+</label>
