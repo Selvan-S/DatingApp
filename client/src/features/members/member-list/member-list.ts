@@ -3,8 +3,8 @@ import { MemberService } from '../../../core/services/member-service';
 import { Paginator } from "../../../shared/paginator/paginator";
 import { Member, MemberParams } from '../../../types/member';
 import { PaginatedResult } from '../../../types/pagination';
-import { MemberCard } from "../member-card/member-card";
 import { FilterModal } from '../filter-modal/filter-modal';
+import { MemberCard } from "../member-card/member-card";
 
 @Component({
   selector: 'app-member-list',
@@ -17,6 +17,7 @@ export class MemberList implements OnInit {
   private memberService = inject(MemberService);
   protected pagenatedMembers = signal<PaginatedResult<Member> | null>(null);
   protected memberParams = new MemberParams();
+  private updatedParams = new MemberParams();
 
   ngOnInit(): void {
     this.loadMembers();
@@ -46,11 +47,32 @@ export class MemberList implements OnInit {
 
   onFilterChange(data: MemberParams) {
     this.memberParams = data;
+    this.updatedParams = { ...data };
     this.loadMembers();
   }
 
   resetFilters() {
     this.memberParams = new MemberParams();
     this.loadMembers();
+  }
+
+  get displayMessage(): string {
+    const defaultParams = new MemberParams();
+
+    const filters: string[] = [];
+
+    if (this.updatedParams.gender) {
+      filters.push(this.updatedParams.gender + 's');
+    } else {
+      filters.push(`Males, Females`);
+    }
+
+    if (this.updatedParams.minAge !== defaultParams.minAge || this.updatedParams.maxAge !== defaultParams.maxAge) {
+      filters.push(`Ages ${this.updatedParams.minAge}-${this.updatedParams.maxAge}`);
+    }
+
+    filters.push(`${this.updatedParams.orderBy === 'lastActive' ? 'Recently active' : 'Newest members'}`);
+
+    return filters.length > 0 ? `Selected filters: ${filters.join('  | ')}` : 'No filters applied';
   }
 }
