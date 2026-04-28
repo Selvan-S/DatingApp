@@ -23,7 +23,7 @@ export class MemberList implements OnInit {
     const filters = localStorage.getItem('filters');
     if (filters) {
       this.memberParams = JSON.parse(filters);
-      this.updatedParams = { ...this.memberParams };
+      this.updatedParams = JSON.parse(filters);
     }
   }
 
@@ -60,7 +60,19 @@ export class MemberList implements OnInit {
   }
 
   resetFilters() {
+    // Reset parent state
     this.memberParams = new MemberParams();
+    this.updatedParams = new MemberParams();
+
+    // Clear the cache so old filters don't reload on a page refresh
+    localStorage.removeItem('filters');
+
+    // Reset the modal's internal signal directly via ViewChild
+    if (this.modal) {
+      this.modal.memberParams.set(new MemberParams());
+    }
+
+    // Fetch the unfiltered list
     this.loadMembers();
   }
 
