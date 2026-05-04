@@ -1,0 +1,65 @@
+using System;
+using API.Entities;
+using API.Interfaces;
+using Microsoft.EntityFrameworkCore;
+
+namespace API.Data;
+
+public class LikesRepository(DataContext dataContext) : ILikesRepository
+{
+    public void AddLike(MemberLike like)
+    {
+        // Implement the logic to add a like to the database
+        dataContext.Likes.Add(like);
+
+    }
+
+    public void DeleteLike(MemberLike like)
+    {
+        dataContext.Likes.Remove(like);
+    }
+
+    public async Task<IReadOnlyList<string>> GetCurrentMemberLikeIds(string memberId)
+    {
+        return await dataContext.Likes
+        .Where(x => x.SourceMemberId == memberId)
+        .Select(x => x.TargetMemberId)
+        .ToListAsync();
+    }
+
+    public async Task<MemberLike?> GetMemberLike(string sourceMemberId, string targetMemberId)
+    {
+        return await dataContext.Likes.FindAsync(sourceMemberId, targetMemberId)
+    }
+
+    public async Task<IReadOnlyList<Member>> GetMemberLikes(string predicate, string memberId)
+    {
+        var query = dataContext.Likes.AsQueryable();
+
+        switch (predicate)
+        {
+            case "liked":
+                return await query
+                .Where(x => x.SourceMemberId == memberId)
+                .Select(x => x.TargetMember)
+                .ToListAsync();
+            case "likedBy":
+                return await query
+                    .Where(x => x.TargetMemberId == memberId)
+                    .Select(x => x.SourceMember)
+                    .ToListAsync();
+
+            default: // mutual
+                var likeIds = await GetCurrentMemberLikeIds(memberId);
+                return await query
+                .Where(x => x.TargetMemberId == memberId && likeIds.Contains(x.SourceMemberId))
+                .Select(x => x.SourceMember)
+                .ToListAsync();
+        }
+    }
+
+    public async Task<bool> SaveAllChanges()
+    {
+        return await dataContext.SaveChangesAsync() > 0;
+    }
+}
