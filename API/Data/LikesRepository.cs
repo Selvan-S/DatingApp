@@ -29,7 +29,7 @@ public class LikesRepository(DataContext dataContext) : ILikesRepository
 
     public async Task<MemberLike?> GetMemberLike(string sourceMemberId, string targetMemberId)
     {
-        return await dataContext.Likes.FindAsync(sourceMemberId, targetMemberId)
+        return await dataContext.Likes.FindAsync(sourceMemberId, targetMemberId);
     }
 
     public async Task<IReadOnlyList<Member>> GetMemberLikes(string predicate, string memberId)
