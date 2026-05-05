@@ -14,4 +14,18 @@ export class MemberCard {
   private likesService = inject(LikesService);
   member = input.required<Member>();
   protected hasLiked = computed(() => this.likesService.likeIds().includes(this.member().id));
+
+  toggleLike(event: Event) {
+    event.stopPropagation(); // Prevent navigation when clicking the like button
+    this.likesService.toggleLike(this.member().id).subscribe({
+      next: () => {
+        if (this.hasLiked()) {
+          this.likesService.likeIds.update(ids => ids.filter(id => id !== this.member().id));
+        } else {
+          this.likesService.likeIds.update(ids => [...ids, this.member().id]);
+        }
+      },
+      error: err => console.error('Failed to toggle like', err)
+    });
+  }
 }
