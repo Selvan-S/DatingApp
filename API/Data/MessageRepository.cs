@@ -22,9 +22,21 @@ public class MessageRepository(DataContext context) : IMessageRepository
         return await context.Messages.FindAsync(messageId);
     }
 
-    public Task<PaginatedResult<MessageDto>> GetMessagesForMember()
+    public async Task<PaginatedResult<MessageDto>> GetMessagesForMember(MessageParams messageParams)
     {
-        throw new NotImplementedException();
+        var query = context.Messages
+        .OrderByDescending(m => m.MessageSent)
+        .AsQueryable();
+
+        query = messageParams.Container switch
+        {
+            "Outbox" => query.Where(u => u.SenderId == messageParams.MemberId && u.SenderDeleted == false),
+            _ => query.Where(u => u.RecipientId == messageParams.MemberId && u.RecipientDeleted == false)
+        };
+
+        var messageQuery = query.Select(MessageExtensions.ToDtoProjection());
+
+        return await PaginationHelper.CreateAsync(messageQuery, messageParams.PageNumber, messageParams.PageSize);
     }
 
     public Task<IReadOnlyList<MessageDto>> GetMessageThread(string currentMemberId, string recipientId)
